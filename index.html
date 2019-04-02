@@ -7,19 +7,35 @@
   <h1> DS4300 Book Recommendations </h1>
   <h2> Fill out your reading profile below </h2>
 
-  <form>
-  An author you love: <input type="text" name="author"><br>
-  An author you hate: <input type="text" name="noauthor"><br>
-  A book you love: <input type="text" name="book"><br>
-  A book you hate: <input type="text" name="nobook"><br>
-  Age: <input type="number" name="age"><br>
+  <form id="sdf">
+  An author you love: <input type="text" name="author" id="author"><br>
+  An author you hate: <input type="text" name="noauthor" id="noauthor"><br>
+  A book you love: <input type="text" name="book" id="book"><br>
+  A book you hate: <input type="text" name="nobook" id="nobook"><br>
+  Age: <input type="number" name="age" age="age"><br>
   <input type="button" value="Give me a book to read" onclick="getRes()">
+  <!--<input type="submit" value="Give me a book to read">-->
 </form>
+
+<p id="output1"></p>
 
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script>
   function getRes() {
-    alert("Send help");
+    //alert("Send help");
+    var form = document.getElementById("sdf");
+    var text = "";
+    for (var i=0; i < form.length; i++) {
+    	text += form.elements[i].value + "<br>";
+    }
+    //var no_author = document.getElementById("noauthor");
+    //var book = document.getElementById("book");
+    //var no_book = document.getElementById("nobook");
+    //var age = document.getElementById("age");
+
+    document.getElementById("output1").innerHTML = text;
+    // console.log(text);
+    // alert(author); //+ no_author + book + no_book _ age);
   }
 </script>
   
