@@ -24,14 +24,18 @@
   function getRes() {
     //alert("Send help");
     var form = document.getElementById("sdf");
-    var text = "";
-    for (var i=0; i < form.length; i++) {
-    	text += form.elements[i].value + "<br>";
-    }
-    //var no_author = document.getElementById("noauthor");
-    //var book = document.getElementById("book");
-    //var no_book = document.getElementById("nobook");
-    //var age = document.getElementById("age");
+    //var text = "";
+    // for (var i=0; i < form.length; i++) {
+    // 	text += form.elements[i].value + "<br>";
+    // }
+
+    var author = form.elements[0].value;
+    var no_author = form.elements[1].value;
+    var book = form.elements[2].value;
+    var no_book = form.elements[3].value;
+    var age = form.elements[4].value;
+
+    var text = "Query here. author: " + author + ", yeah";
 
     document.getElementById("output1").innerHTML = text;
     // console.log(text);
