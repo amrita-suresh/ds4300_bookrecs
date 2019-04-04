@@ -1,0 +1,64 @@
+// create a unique id, has to run one at a time
+CREATE CONSTRAINT ON (book:BX_Book) ASSERT book.ISBN IS UNIQUE;
+CREATE CONSTRAINT ON (user:BX_User) ASSERT user.ID IS UNIQUE;
+
+// good for look up later on
+CREATE INDEX ON :Author(AName)
+CREATE INDEX ON :Publisher(PName)
+
+// uploading book data 
+USING PERIODIC COMMIT // commit every 1000 line, preventing memory overhead
+LOAD CSV WITH HEADERS FROM "file:///BX_Books.csv" AS csvLine
+FIELDTERMINATOR ';'
+
+// creating an individual node for author for fast look up
+MERGE (author:Author {AName: csvLine.`Book-Author`})
+// creating an individual node for publisher for fast look up
+MERGE (publisher:Publisher {PName: csvLine.`Publisher`})
+// book data 
+CREATE (book:BX_Book {ISBN: toInteger(csvLine.ISBN), title: csvLine.`Book-Title`, yob:toInteger(csvLine.`Year-Of-Publication`), image_s: csvLine.`Image-URL-S`, image_m:csvLine.`Image-URL-M`, image_l: csvLine.`Image-URL-L` })
+// author relationship
+CREATE (book)-[:WRITTEN_BY]->(author)
+// publisher relationship
+CREATE (book)-[:PUBLISH_BY]->(publisher)
+
+
+// uploading user data 
+CREATE INDEX ON :Age(age)
+CREATE INDEX ON :Location(loc)
+
+USING PERIODIC COMMIT // commit every 1000 line, preventing memory overhead
+LOAD CSV WITH HEADERS FROM "file:///BX-Users.csv" AS csvLine
+FIELDTERMINATOR ';'
+
+// creating an individual node for age for fast look up
+MERGE (age:Age {age: csvLine.`Age`})
+// creating an individual node for location for fast look up
+MERGE (location:Location {loc: csvLine.`Location`})
+// user data 
+CREATE (user:BX_User {ID: toInteger(csvLine.`User-ID`)})
+// age relationship
+CREATE (user)-[:HAS_AGE]->(age)
+// location relationship
+CREATE (user)-[:LIVED_IN]->(location)
+
+
+
+// loading the read relationships
+USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///BX-Book-Ratings.csv" AS csvLine
+FIELDTERMINATOR ';'
+MATCH (user:BX_User {id: toInteger(csvLine.`User-ID`)})
+Match(book:BX_Book {id: toInteger(csvLine.ISBN)})
+CREATE (user)-[:READ {BRating: csvLine.`Book-Rating`}]->(book)
+
+
+// sample query to retrieve all book written by J.K. Rowling
+MATCH (jkrowling:Author { AName: 'J.K. Rowling' })<-[:WRITTEN_BY]-(book)
+RETURN book.title
+// different way to search it
+MATCH (a:Author{AName: 'J.K. Rowling'})-[r]-(b) return a, r, b
+// sample query to retrieve all relationship fo the book Dam-Burst of Dreams
+MATCH (a:BX_Book {title: 'Dam-Burst of Dreams'})-[r]-(b)
+RETURN a,r,b
+
