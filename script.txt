@@ -62,3 +62,19 @@ MATCH (a:Author{AName: 'J.K. Rowling'})-[r]-(b) return a, r, b
 MATCH (a:BX_Book {title: 'Dam-Burst of Dreams'})-[r]-(b)
 RETURN a,r,b
 
+// rating relationships
+MATCH p=(u:BX_User)-[r:READ]->(b:BX_Book) where r.BRating = '1' OR r.BRating = '2' 
+CREATE (u)-[:HATED {BRating:r.BRating}]->(b)
+
+
+MATCH p=(u:BX_User)-[r:READ]->(b:BX_Book) where r.BRating = '3' OR r.BRating = '4' 
+CREATE (u)-[:DISLIKE {BRating:r.BRating}]->(b)
+
+MATCH p=(u:BX_User)-[r:READ]->(b:BX_Book) where r.BRating = '5' OR r.BRating = '6' 
+CREATE (u)-[:NEUTRAL {BRating:r.BRating}]->(b)
+
+MATCH p=(u:BX_User)-[r:READ]->(b:BX_Book) where r.BRating = '7' OR r.BRating = '8' 
+CREATE (u)-[:LIKE {BRating:r.BRating}]->(b)
+
+MATCH p=(u:BX_User)-[r:READ]->(b:BX_Book) where r.BRating = '9' OR r.BRating = '10' 
+CREATE (u)-[:LOVE {BRating:r.BRating}]->(b)
