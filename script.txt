@@ -16,7 +16,7 @@ MERGE (author:Author {AName: csvLine.`Book-Author`})
 // creating an individual node for publisher for fast look up
 MERGE (publisher:Publisher {PName: csvLine.`Publisher`})
 // book data 
-CREATE (book:BX_Book {ISBN: toInteger(csvLine.ISBN), title: csvLine.`Book-Title`, yob:toInteger(csvLine.`Year-Of-Publication`), image_s: csvLine.`Image-URL-S`, image_m:csvLine.`Image-URL-M`, image_l: csvLine.`Image-URL-L` })
+CREATE (book:BX_Book {ISBN: csvLine.ISBN, title: csvLine.`Book-Title`, yob:toInteger(csvLine.`Year-Of-Publication`), image_s: csvLine.`Image-URL-S`, image_m:csvLine.`Image-URL-M`, image_l: csvLine.`Image-URL-L` })
 // author relationship
 CREATE (book)-[:WRITTEN_BY]->(author)
 // publisher relationship
@@ -48,21 +48,12 @@ CREATE (user)-[:LIVED_IN]->(location)
 USING PERIODIC COMMIT 500
 LOAD CSV WITH HEADERS FROM "file:///BX-Book-Ratings.csv" AS csvLine
 FIELDTERMINATOR ';'
-MATCH (user:BX_User {id: toInteger(csvLine.`User-ID`)})
-Match(book:BX_Book {id: toInteger(csvLine.ISBN)})
+MATCH (user:BX_User {ID: toInteger(csvLine.`User-ID`)})
+Match(book:BX_Book {ISBN: csvLine.ISBN})
 CREATE (user)-[:READ {BRating: csvLine.`Book-Rating`}]->(book)
 
 
-// sample query to retrieve all book written by J.K. Rowling
-MATCH (jkrowling:Author { AName: 'J.K. Rowling' })<-[:WRITTEN_BY]-(book)
-RETURN book.title
-// different way to search it
-MATCH (a:Author{AName: 'J.K. Rowling'})-[r]-(b) return a, r, b
-// sample query to retrieve all relationship fo the book Dam-Burst of Dreams
-MATCH (a:BX_Book {title: 'Dam-Burst of Dreams'})-[r]-(b)
-RETURN a,r,b
 
-// rating relationships
 MATCH p=(u:BX_User)-[r:READ]->(b:BX_Book) where r.BRating = '1' OR r.BRating = '2' 
 CREATE (u)-[:HATED {BRating:r.BRating}]->(b)
 
@@ -78,3 +69,15 @@ CREATE (u)-[:LIKE {BRating:r.BRating}]->(b)
 
 MATCH p=(u:BX_User)-[r:READ]->(b:BX_Book) where r.BRating = '9' OR r.BRating = '10' 
 CREATE (u)-[:LOVE {BRating:r.BRating}]->(b)
+
+
+
+// sample query to retrieve all book written by J.K. Rowling
+MATCH (jkrowling:Author { AName: 'J.K. Rowling' })<-[:WRITTEN_BY]-(book)
+RETURN book.title
+// different way to search it
+MATCH (a:Author{AName: 'J.K. Rowling'})-[r]-(b) return a, r, b
+// sample query to retrieve all relationship fo the book Dam-Burst of Dreams
+MATCH (a:BX_Book {title: 'Dam-Burst of Dreams'})-[r]-(b)
+RETURN a,r,b
+
