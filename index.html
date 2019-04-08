@@ -3,6 +3,15 @@
 
 <html>
 
+<style>
+  p.about_alg {
+    font-style: italic;
+  }
+  p.more-instr {
+    font-weight: bold;
+  }
+</style>
+
 <body>
   <h1> DS4300 Book Recommendations </h1>
   <h2> Fill out your reading profile below </h2>
@@ -12,34 +21,63 @@
   An author you hate: <input type="text" name="noauthor" id="noauthor"><br>
   A book you love: <input type="text" name="book" id="book"><br>
   A book you hate: <input type="text" name="nobook" id="nobook"><br>
-  Age: <input type="number" name="age" age="age"><br>
-  <input type="button" value="Give me a book to read" onclick="getRes()">
-  <!--<input type="submit" value="Give me a book to read">-->
+  Age: <input type="number" name="age" id="age"><br>
+  Number of books you want us to recommend: <input type="number" name="num" id="num"><br>
+  <input type="button" value="Find books based on books I like" onclick="getResLikes()"><br>
+  <!--<input type="button" value="Find books based on books I dislike" onclick="getResDislikes()"><br>-->
+  <input type="button" value="Find books based on authors I like" onclick="getResAuthLike()"><br>
 </form>
 
-<p id="output1"></p>
+<h3 id="big_instr"></h3>
+<p id="more_instr" class="more-instr"></p>
+<p id="query"></p>
+<p id="about_alg" class="about_alg"></p>
 
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script>
-  function getRes() {
-    //alert("Send help");
+  function getResLikes() {
     var form = document.getElementById("sdf");
-    //var text = "";
-    // for (var i=0; i < form.length; i++) {
-    // 	text += form.elements[i].value + "<br>";
-    // }
+
+    var book = form.elements[2].value;
+    var num = form.elements[5].value;
+
+    var text = "get_recomendation('" + book + "', 'book', " + num + ")";
+
+    document.getElementById("big_instr").innerHTML = "Copy-paste the following query into your Python IDE:";
+    document.getElementById("query").innerHTML = text;
+    document.getElementById("about_alg").innerHTML = "This algorithm first finds users who like the same book as you and then makes a dataframe of every book those users like. It then weights the books by number of reviews and returns the desired number of book recommendations to the user.";
+
+  }
+
+  // function getResDislikes() {
+  //   var form = document.getElementById("sdf");
+
+  //   var author = form.elements[0].value;
+  //   var no_author = form.elements[1].value;
+  //   var book = form.elements[2].value;
+  //   var no_book = form.elements[3].value;
+  //   var age = form.elements[4].value;
+
+  //   var text = "Query here. author: " + author + ", aaa";
+
+  //   document.getElementById("big_instr").innerHTML = "Copy-paste the following query into your Neo4j browser:";
+  //   document.getElementById("query").innerHTML = text;
+  //   document.getElementById("about_alg").innerHTML = "about this algorithm";
+
+  }
+
+  function getResAuthLike() {
+    var form = document.getElementById("sdf");
 
     var author = form.elements[0].value;
-    var no_author = form.elements[1].value;
-    var book = form.elements[2].value;
-    var no_book = form.elements[3].value;
-    var age = form.elements[4].value;
+    var num = form.elements[5].value;
 
-    var text = "Query here. author: " + author + ", yeah";
+    var text = "get_recomendation('" + author + "', 'book', " + num + ")";
 
-    document.getElementById("output1").innerHTML = text;
-    // console.log(text);
-    // alert(author); //+ no_author + book + no_book _ age);
+    document.getElementById("big_instr").innerHTML = "Copy-paste the following query into your Python IDE:";
+    document.getElementById("query").innerHTML = text;
+    document.getElementById("about_alg").innerHTML = "This query finds readers who love books by the same author you inputted, and returns other books that those readers love. It then calculates a simple score for each book by multiplying the review count by the rating, and returns the top n ranked books.";
+
   }
 </script>
   

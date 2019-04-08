@@ -1,4 +1,5 @@
 // create a unique id, has to run one at a time
+// paste in the next 4 commands one line at a time
 CREATE CONSTRAINT ON (book:BX_Book) ASSERT book.ISBN IS UNIQUE;
 CREATE CONSTRAINT ON (user:BX_User) ASSERT user.ID IS UNIQUE;
 
@@ -6,9 +7,11 @@ CREATE CONSTRAINT ON (user:BX_User) ASSERT user.ID IS UNIQUE;
 CREATE INDEX ON :Author(AName)
 CREATE INDEX ON :Publisher(PName)
 
+
+
 // uploading book data 
 USING PERIODIC COMMIT // commit every 1000 line, preventing memory overhead
-LOAD CSV WITH HEADERS FROM "file:///BX_Books.csv" AS csvLine
+LOAD CSV WITH HEADERS FROM "file:///BX-Books.csv" AS csvLine
 FIELDTERMINATOR ';'
 
 // creating an individual node for author for fast look up
@@ -21,6 +24,8 @@ CREATE (book:BX_Book {ISBN: csvLine.ISBN, title: csvLine.`Book-Title`, yob:toInt
 CREATE (book)-[:WRITTEN_BY]->(author)
 // publisher relationship
 CREATE (book)-[:PUBLISH_BY]->(publisher)
+
+
 
 
 // uploading user data 
@@ -44,6 +49,7 @@ CREATE (user)-[:LIVED_IN]->(location)
 
 
 
+
 // loading the read relationships
 USING PERIODIC COMMIT 500
 LOAD CSV WITH HEADERS FROM "file:///BX-Book-Ratings.csv" AS csvLine
@@ -53,7 +59,7 @@ Match(book:BX_Book {ISBN: csvLine.ISBN})
 CREATE (user)-[:READ {BRating: csvLine.`Book-Rating`}]->(book)
 
 
-
+// create more relationships
 MATCH p=(u:BX_User)-[r:READ]->(b:BX_Book) where r.BRating = '1' OR r.BRating = '2' 
 CREATE (u)-[:HATED {BRating:r.BRating}]->(b)
 
@@ -77,7 +83,7 @@ MATCH (jkrowling:Author { AName: 'J.K. Rowling' })<-[:WRITTEN_BY]-(book)
 RETURN book.title
 // different way to search it
 MATCH (a:Author{AName: 'J.K. Rowling'})-[r]-(b) return a, r, b
-// sample query to retrieve all relationship fo the book Dam-Burst of Dreams
+// sample query to retrieve all relationships for the book Dam-Burst of Dreams
 MATCH (a:BX_Book {title: 'Dam-Burst of Dreams'})-[r]-(b)
 RETURN a,r,b
 
