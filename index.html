@@ -16,16 +16,22 @@
   <h1> DS4300 Book Recommendations </h1>
   <h2> Fill out your reading profile below </h2>
 
-  <form id="sdf">
+  <form id="form">
   An author you love: <input type="text" name="author" id="author"><br>
   An author you hate: <input type="text" name="noauthor" id="noauthor"><br>
   A book you love: <input type="text" name="book" id="book"><br>
   A book you hate: <input type="text" name="nobook" id="nobook"><br>
-  Age: <input type="number" name="age" id="age"><br>
+  A genre you want to read: <input type="text" name="genre" id="genre"><br>
   Number of books you want us to recommend: <input type="number" name="num" id="num"><br>
-  <input type="button" value="Find books based on books I like" onclick="getResLikes()"><br>
-  <!--<input type="button" value="Find books based on books I dislike" onclick="getResDislikes()"><br>-->
+  Enter 4 more books you love (for the matrix factorization algorithm):<br>
+  <input type="text" name="book2" id="book2"><br>
+  <input type="text" name="book3" id="book3"><br>
+  <input type="text" name="book4" id="book4"><br>
+  <input type="text" name="book5" id="book5"><br>
+  <input type="button" value="Find books based on a book I like" onclick="getResLikes()"><br>
+  <input type="button" value="Find books based on books I dislike" onclick="getResDislikes()"><br>
   <input type="button" value="Find books based on authors I like" onclick="getResAuthLike()"><br>
+  <input type="button" value="Find books based on matrix factorization" onclick="getResMatrix()"><br>
 </form>
 
 <h3 id="big_instr"></h3>
@@ -36,7 +42,7 @@
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script>
   function getResLikes() {
-    var form = document.getElementById("sdf");
+    var form = document.getElementById("form");
 
     var book = form.elements[2].value;
     var num = form.elements[5].value;
@@ -49,25 +55,23 @@
 
   }
 
-  // function getResDislikes() {
-  //   var form = document.getElementById("sdf");
+  function getResDislikes() {
+    var form = document.getElementById("form");
 
-  //   var author = form.elements[0].value;
-  //   var no_author = form.elements[1].value;
-  //   var book = form.elements[2].value;
-  //   var no_book = form.elements[3].value;
-  //   var age = form.elements[4].value;
+    var book = form.elements[2].value;
+    var no_book = form.elements[3].value;
+    var num = form.elements[5].value;
 
-  //   var text = "Query here. author: " + author + ", aaa";
+    var text = "like_dislike_rec('" + book + "', '" + no_book + "', " + num + ")";
 
-  //   document.getElementById("big_instr").innerHTML = "Copy-paste the following query into your Neo4j browser:";
-  //   document.getElementById("query").innerHTML = text;
-  //   document.getElementById("about_alg").innerHTML = "about this algorithm";
+    document.getElementById("big_instr").innerHTML = "Copy-paste the following query into your Python IDE:";
+    document.getElementById("query").innerHTML = text;
+    document.getElementById("about_alg").innerHTML = "Another use of collaborative filtering, this algorithm uses your inputs to find books that other users who like the same books as you AND dislike the same books as you dislike. It weights these recommended books by both the number of reviews and the average rating to return the most relevant books.";
 
-  //}
+  }
 
   function getResAuthLike() {
-    var form = document.getElementById("sdf");
+    var form = document.getElementById("form");
 
     var author = form.elements[0].value;
     var num = form.elements[5].value;
@@ -78,6 +82,23 @@
     document.getElementById("query").innerHTML = text;
     document.getElementById("about_alg").innerHTML = "This query finds readers who love books by the same author you inputted, and returns other books that those readers love. It then calculates a simple score for each book by multiplying the review count by the rating, and returns the top n ranked books.";
 
+  }
+
+  function getResMatrix() {
+  	var form = document.getElementById("form");
+
+  	var book1 = form.elements[2].value;
+  	var book2 = form.elements[6].value;
+  	var book3 = form.elements[7].value;
+  	var book4 = form.elements[8].value;
+  	var book5 = form.elements[8].value;
+  	var num = form.elements[5].value;
+
+  	var text = "tbd";
+
+  	document.getElementById("big_instr").innerHTML = "Copy-paste the following query into your Python IDE:";
+  	document.getElementById("query").innerHTML = text;
+  	document.getElementById("about_alg").innerHTML = "This algorithm uses matrix factorization to return book recommendations. Matrix factorization is a method of collaborative filtering in which a matrix of user-book interactions is reduced (decomposed) into the product of two lower-dimensional matrices: one containing a row for each user, the other with a column for each book. The algorithm will use the matrix to compare your book preferences with those of other users in the matrix to calculate the top n books based on what the other users like."
   }
 </script>
   
