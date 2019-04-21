@@ -16,7 +16,6 @@ Use the following steps to try out our product yourself.
 - Copy-paste the resulting output into your Neo4j browser or Python IDE (depending on the algorithm) to find your next favorite book!
 
 ## Walkthrough of the files
-- script.txt contains the Cypher commands to set up the Neo4j database
-- bookrecs.py contains the Python code for books-liked and authors-liked collaborative filtering algorithms.
-- Project_like_dislike.py contains the Python code for the like-and-dislike collaborative filtering algorithm.
-- [The other .py file] contains the Python code for the matrix factorization algorithm.
+- `script.txt` contains the Cypher commands to set up the Neo4j database
+- `Book Rec Algorithms.ipynb` contains the Python code for books-liked and authors-liked collaborative filtering algorithms, as well as the matrix factorization code. The results of matrix factorization can be found at this link: https://colab.research.google.com/drive/1JLhJMTDZyTbtNz0uzlHCALbLBfhwyXPo
+- `Project_like_dislike.py` contains the Python code for the like-and-dislike collaborative filtering algorithm.
